@@ -8,6 +8,7 @@ import 'package:storyapp/provider/auth_provider.dart';
 import 'package:storyapp/provider/localization_provider.dart';
 import 'package:storyapp/provider/story_provider.dart';
 import 'package:storyapp/provider/theme_provider.dart';
+import 'package:storyapp/routes/location_manager.dart';
 import 'package:storyapp/routes/page_manager.dart';
 import 'package:storyapp/routes/router_delegate.dart';
 import 'package:storyapp/style/app_theme.dart';
@@ -22,6 +23,7 @@ void main() {
           create: (context) => AuthRepository(context.read<ApiService>()),
         ),
         ChangeNotifierProvider(create: (context) => PageManager()),
+        ChangeNotifierProvider(create: (context) => LocationManager()),
         ChangeNotifierProvider(
           create: (context) => AuthProvider(context.read<AuthRepository>()),
         ),

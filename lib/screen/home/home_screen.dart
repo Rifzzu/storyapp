@@ -92,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         automaticallyImplyLeading: false,
       ),
-      body: _HomeState(refreshStories: () => _refreshStories(context)),
+      body: _homeState(refreshStories: () => _refreshStories(context)),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           final pageManager = context.read<PageManager>();
@@ -115,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
         : Icons.light_mode;
   }
 
-  _HomeState({required Future<void> Function() refreshStories}) {
+  _homeState({required Future<void> Function() refreshStories}) {
     return Consumer<StoryProvider>(
       builder: (context, value, _) {
         return RefreshIndicator(

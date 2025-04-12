@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:storyapp/data/db/story_repository.dart';
-import 'package:storyapp/data/model/detail_story_response.dart';
+import 'package:storyapp/data/model/story_response.dart';
 import 'package:storyapp/util/detail_story_state.dart';
 import 'package:storyapp/util/stories_state.dart';
 

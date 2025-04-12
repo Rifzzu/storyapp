@@ -30,15 +30,23 @@ class AddStoryProvider extends ChangeNotifier {
   Future<void> addStory(
     List<int> bytes,
     String fileName,
-    String description,
-  ) async {
+    String description, {
+    double? lat,
+    double? lon,
+  }) async {
     try {
       message = "";
       uploadResponse = null;
       isUploading = true;
       notifyListeners();
 
-      uploadResponse = await apiService.addStory(bytes, fileName, description);
+      uploadResponse = await apiService.addStory(
+        bytes,
+        fileName,
+        description,
+        lat: lat,
+        lon: lon,
+      );
       message = uploadResponse?.message ?? "success";
       isUploading = false;
       notifyListeners();
