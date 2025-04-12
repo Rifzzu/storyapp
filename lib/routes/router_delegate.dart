@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:storyapp/data/db/auth_repository.dart';
 import 'package:storyapp/screen/add_story/add_story_screen.dart';
+import 'package:storyapp/screen/add_story/maps_on_pick_screen.dart';
+import 'package:storyapp/screen/detail/detail_map_screen.dart';
 import 'package:storyapp/screen/detail/detail_screen.dart';
 import 'package:storyapp/screen/home/home_screen.dart';
 import 'package:storyapp/screen/login/login_screen.dart';
@@ -27,6 +30,9 @@ class MyRouterDelegate extends RouterDelegate
   bool isRegister = false;
   String? selectedStory;
   bool isAddStory = false;
+  LatLng? latLng;
+  bool isLocationFromMap = false;
+  LatLng? locationLatLng;
 
   @override
   Widget build(BuildContext context) {
@@ -40,14 +46,28 @@ class MyRouterDelegate extends RouterDelegate
     return Navigator(
       key: navigatorKey,
       pages: historyStack,
-      onDidRemovePage: (page) {
-        if (page.key == ValueKey("DetailStoryScreen-$selectedStory")) {
-          selectedStory = null;
-          notifyListeners();
-        } else if (page.key == ValueKey("AddStoryScreen")) {
-          isAddStory = false;
-          notifyListeners();
+      onPopPage: (route, result) {
+        final didPop = route.didPop(result);
+        if (!didPop) {
+          return false;
         }
+
+        if (route.settings is MaterialPage) {
+          final pageKey = (route.settings as MaterialPage).key;
+          if (pageKey == ValueKey("DetailMapScreen-$latLng")) {
+            latLng = null;
+          } else if (pageKey == ValueKey("DetailStoryScreen-$selectedStory")) {
+            selectedStory = null;
+          } else if (pageKey == const ValueKey("AddStoryScreen")) {
+            isAddStory = false;
+          } else if (pageKey == const ValueKey("RegisterScreen")) {
+            isRegister = false;
+          } else if (pageKey == ValueKey("MapsOnPickScreen-$locationLatLng")) {
+            isLocationFromMap = false;
+          }
+        }
+        notifyListeners();
+        return true;
       },
     );
   }
@@ -81,6 +101,7 @@ class MyRouterDelegate extends RouterDelegate
     ),
     if (isRegister == true)
       MaterialPage(
+        key: const ValueKey("RegisterScreen"),
         child: RegisterScreen(
           onRegister: () {
             isRegister = false;
@@ -115,7 +136,13 @@ class MyRouterDelegate extends RouterDelegate
     if (selectedStory != null)
       MaterialPage(
         key: ValueKey("DetailStoryScreen-$selectedStory"),
-        child: DetailScreen(storyId: selectedStory!),
+        child: DetailScreen(
+          storyId: selectedStory!,
+          toStoryMap: (latLng) {
+            this.latLng = latLng;
+            notifyListeners();
+          },
+        ),
       ),
     if (isAddStory == true)
       MaterialPage(
@@ -123,6 +150,27 @@ class MyRouterDelegate extends RouterDelegate
         child: AddStoryScreen(
           onPost: () {
             isAddStory = false;
+            notifyListeners();
+          },
+          onChooseLocation: (latLng) {
+            isLocationFromMap = true;
+            locationLatLng = latLng;
+            notifyListeners();
+          },
+        ),
+      ),
+    if (latLng != null)
+      MaterialPage(
+        key: ValueKey("DetailMapScreen-$latLng"),
+        child: DetailMapScreen(latLng: latLng!),
+      ),
+    if (isLocationFromMap)
+      MaterialPage(
+        key: ValueKey("MapsOnPickScreen-$locationLatLng"),
+        child: MapsOnPickScreen(
+          latLng: locationLatLng,
+          onChooseMap: (LatLng latLng) {
+            isLocationFromMap = false;
             notifyListeners();
           },
         ),

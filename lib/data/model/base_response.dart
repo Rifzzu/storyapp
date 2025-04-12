@@ -1,11 +1,14 @@
-class BaseResponse {
-  bool error;
-  String message;
+import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  BaseResponse({required this.error, required this.message});
+part 'base_response.freezed.dart';
+part 'base_response.g.dart';
+
+@freezed
+class BaseResponse with _$BaseResponse {
+  const factory BaseResponse({required bool error, required String message}) =
+      _BaseResponse;
 
   factory BaseResponse.fromJson(Map<String, dynamic> json) =>
-      BaseResponse(error: json["error"], message: json["message"]);
-
-  Map<String, dynamic> toJson() => {"error": error, "message": message};
+      _$BaseResponseFromJson(json);
 }

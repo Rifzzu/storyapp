@@ -92,8 +92,10 @@ class ApiService {
   Future<BaseResponse> addStory(
     List<int> bytes,
     String fileName,
-    String description,
-  ) async {
+    String description, {
+    double? lat,
+    double? lon,
+  }) async {
     final preferences = await SharedPreferences.getInstance();
     final token = preferences.getString('token');
     final uri = Uri.parse("$_baseUrl/stories");
@@ -105,6 +107,11 @@ class ApiService {
       bytes,
       filename: fileName,
     );
+
+    if (lat != null && lon != null) {
+      request.fields['lat'] = lat.toString();
+      request.fields['lon'] = lon.toString();
+    }
 
     final Map<String, String> fields = {"description": description};
     final Map<String, String> headers = {
